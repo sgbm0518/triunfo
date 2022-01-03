@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    const REGISTRO_EXITOSO = 'Se ha registrado satisfactoriamente';
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -54,6 +55,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Profesion", mappedBy="user")
      */
     private $profesion;
+
+    public function __construct()
+    {
+        $this->baneado = false;
+        $this->roles = ['ROLE_USER'];  // con estas dos lineas de codigo tengo suficiente, asi que ire registrocontroller y borrare las lineas de baneado y roles, que seria innecesarias
+    }
 
     public function getId(): ?int
     {
