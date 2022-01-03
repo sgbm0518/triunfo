@@ -8,14 +8,14 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class RegistroController extends AbstractController
 {
     /**
      * @Route("/registro", name="registro")
      */
-    public function index(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function index(Request $request, UserPasswordHasherInterface $passwordHasher)
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -24,7 +24,8 @@ class RegistroController extends AbstractController
             $em = $this->getDoctrine()->getManager();//entity manager : Manejador de las entiedades, con este em, yo puedo persistir o guardar una entidad en la base de datos, eliminarla o editarla.
             $user->setBaneado(false);
             $user->setRoles(['ROLE_USER']);
-            $user->setPassword($passwordEncoder->encodePassword($user, $form['password']->getData()));
+            $this->passwordHasher = $passwordHasher;
+            $user->setPassword($this->passwordHasher->hashPassword($user, $form['password']->getData())); // $form['password']->getData() -> aqui se le esta diciendo, obtengame la contraseña que el usuario ingreso y pongamela en em -> flush y se guarda
             $em->persist($user);
             $em->flush();
             $this->addFlash('exito','Se ha registrado satisfactoriamente');
