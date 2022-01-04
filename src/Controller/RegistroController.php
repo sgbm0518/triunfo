@@ -22,8 +22,8 @@ class RegistroController extends AbstractController
         $form->handleRequest($request); // determino si el formulario fue enviado
         if($form->isSubmitted() && $form->isValid()){
             $em = $this->getDoctrine()->getManager();//entity manager : Manejador de las entiedades, con este em, yo puedo persistir o guardar una entidad en la base de datos, eliminarla o editarla.
-            $this->passwordHasher = $passwordHasher;
-            $user->setPassword($this->passwordHasher->hashPassword($user, $form['password']->getData())); // $form['password']->getData() -> aqui se le esta diciendo, obtengame la contraseña que el usuario ingreso y pongamela en em -> flush y se guarda
+            // $this->passwordHasher = $passwordHasher;
+            $user->setPassword($passwordHasher->hashPassword($user, $form['password']->getData())); // $form['password']->getData() -> aqui se le esta diciendo, obtengame la contraseña que el usuario ingreso y pongamela en em -> flush y se guarda
             $em->persist($user);
             $em->flush();
             $this->addFlash('exito', User::REGISTRO_EXITOSO);
